@@ -1,31 +1,33 @@
 import pygame
+from constants import FPS, screen, background
+from sprites import ForegroundGrass
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((960, 540))
 clock = pygame.time.Clock()
 running = True
+pygame.display.set_caption("lightning in a bottle")
 
-#Load images and sounds
-backgroundpng = pygame.image.load("images/background.png")
-background = pygame.transform.scale(backgroundpng, (960, 540))
+# initialize entities
+grass = ForegroundGrass()
 
 
 while running:
     # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT: #If user presses X button
             running = False
 
-    # fill the screen with a color to wipe away anything from last frame
+    #Background
     screen.blit(background, (0,0))
 
     # RENDER YOUR GAME HERE
+    #Grass foreground animation
+    grass.update()
 
     # flip() the display to put your work on screen
     pygame.display.flip()
 
-    clock.tick(60)  # limits FPS to 60
+    clock.tick(FPS)  # limits FPS to 60
 
 pygame.quit()
