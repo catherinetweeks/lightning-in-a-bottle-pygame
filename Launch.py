@@ -1,6 +1,7 @@
 import pygame
-from constants import FPS, screen, background
-from sprites import ForegroundGrass
+import random
+from constants import FPS, screen, background, firefly_count, width, height
+from sprites import ForegroundGrass, Firefly
 
 # pygame setup
 pygame.init()
@@ -11,7 +12,13 @@ pygame.display.set_caption("lightning in a bottle")
 # initialize entities
 grass = ForegroundGrass()
 
+fireflies = pygame.sprite.Group()
+for _ in range(firefly_count):
+    new_firefly = Firefly(random.randint(0, width), random.randint(0, height))
+    fireflies.add(new_firefly)
 
+
+#Main loop
 while running:
     # poll for events
     for event in pygame.event.get():
@@ -23,6 +30,7 @@ while running:
 
     # RENDER YOUR GAME HERE
     #Grass foreground animation
+    fireflies.update()
     grass.update()
 
     # flip() the display to put your work on screen
