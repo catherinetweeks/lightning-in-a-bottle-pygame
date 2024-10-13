@@ -9,6 +9,11 @@ clock = pygame.time.Clock()
 running = True
 pygame.display.set_caption("lightning in a bottle")
 
+#Game states
+start = "start"
+game = "game"
+end = "end"
+
 # initialize entities
 grass = ForegroundGrass()
 
@@ -19,19 +24,34 @@ for _ in range(firefly_count):
 
 
 #Main loop
+game_state = start
 while running:
     # poll for events
     for event in pygame.event.get():
         if event.type == pygame.QUIT: #If user presses X button
             running = False
 
-    #Background
-    screen.blit(background, (0,0))
+    #starting game
+        if game_state == start:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:  # Press Enter to start
+                game_state = game
+        elif game_state == end: 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:  # Press Enter to restart
+                game_state = start
 
-    # RENDER YOUR GAME HERE
-    #Grass foreground animation
-    fireflies.update()
-    grass.update()
+    #Background
+    if game_state == start:
+        continue
+    elif game_state == game:
+        screen.blit(background, (0,0))
+
+        # RENDER YOUR GAME HERE
+        #Grass foreground animation
+        fireflies.update()
+        grass.update()
+
+    elif game_state == end:
+        continue
 
     # flip() the display to put your work on screen
     pygame.display.flip()
