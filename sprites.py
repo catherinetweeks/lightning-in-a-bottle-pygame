@@ -21,6 +21,9 @@ firefly_frames = [
     pygame.transform.scale(pygame.image.load("images/firefly loop/firefly1.png"), (24, 24)).convert_alpha(),
 ]
 
+empty_jar_image = pygame.transform.scale(pygame.image.load("images/empty_jar.png"), (80, 80)).convert_alpha()
+glow_overlay = pygame.transform.scale(pygame.image.load('images/glow_jar.png'), (80, 80)).convert_alpha()
+
 
 #Waving grass for the foreground
 class ForegroundGrass(pygame.sprite.Sprite):
@@ -47,13 +50,10 @@ class Firefly(pygame.sprite.Sprite):
         self.animation_speed = random.randint(3, 10)
         self.frame_timer = 0
         #using mid-size frame for the get rect function
-        self.image = firefly_frames[1]
+        self.frames = firefly_frames
+        self.image = self.frames[self.frame_index]
         self.rect = self.image.get_rect()
-        #random coordinates for firefly
-        #self.rect.x = 
-        self.x = x
-        self.y = y
-        self.speed = random.randint(0,10)
+        self.rect.topleft = (x, y)
 
     def update(self):
         #firefly aniation
@@ -61,6 +61,40 @@ class Firefly(pygame.sprite.Sprite):
         if self.frame_timer >= self.animation_speed:
             self.frame_index = (self.frame_index + 1) % len(firefly_frames)
             self.frame_timer = 0
-        screen.blit(firefly_frames[self.frame_index], (self.x, self.y))
+        self.image = self.frames[self.frame_index]
+        self.rect = self.image.get_rect(topleft=self.rect.topleft)
+        #draw updated firefly
+        screen.blit(self.image, self.rect)
         #moving across the screen
+        
 
+class Jar(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()  # Initialize the parent class (Sprite)
+        self.image = empty_jar_image  # Load or assign the jar image
+        self.rect = self.image.get_rect(topleft=(x, y))  # Create a rectangle for positioning
+
+    def update(self):
+        # Get the current mouse position
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        # Update the jar's position so that the top-left corner of the jar aligns with the mouse
+        self.rect.topleft = (mouse_x, mouse_y)
+        # Blit the jar image at the updated position
+        screen.blit(self.image, self.rect)
+
+
+
+class Glow(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = glow_overlay
+        self.rect = self.image.get_rect(topleft =(x,y))
+        self.alpha = 5
+
+    def update(self):
+         # Get the current mouse position
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        # Update the jar's position so that the top-left corner of the jar aligns with the mouse
+        self.rect.topleft = (mouse_x, mouse_y)
+        # Blit the jar image at the updated position
+        screen.blit(self.image, self.rect)
