@@ -82,19 +82,3 @@ class Jar(pygame.sprite.Sprite):
         # Blit the jar image at the updated position
         screen.blit(self.image, self.rect)
 
-
-
-class Glow(pygame.sprite.Sprite):
-    def __init__(self, x, y):
-        super().__init__()
-        self.image = glow_overlay
-        self.rect = self.image.get_rect(topleft =(x,y))
-        self.alpha = 5
-
-    def update(self):
-         # Get the current mouse position
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        # Update the jar's position so that the top-left corner of the jar aligns with the mouse
-        self.rect.topleft = (mouse_x, mouse_y)
-        # Blit the jar image at the updated position
-        screen.blit(self.image, self.rect)

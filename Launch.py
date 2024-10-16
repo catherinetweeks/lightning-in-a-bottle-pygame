@@ -1,7 +1,7 @@
 import pygame
 import random
 from constants import FPS, screen, background, firefly_count, width, height
-from sprites import ForegroundGrass, Firefly, grass_frames, Jar, Glow
+from sprites import ForegroundGrass, Firefly, grass_frames, Jar
 
 # pygame setup
 pygame.init()
@@ -55,7 +55,7 @@ while running:
         
 
         #Game logic here
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # Left click
             mouse_pos = pygame.mouse.get_pos()
             # Check for collision with any firefly
             for firefly in fireflies:
@@ -79,11 +79,7 @@ while running:
         #Update sprites
         fireflies.update()
         grass.update()
-        if fireflies_caught == 0:
-            jar.update()
-        else: 
-            glow.update()
-            jar.update()
+        jar.update()
     
     elif game_state == paused:
         screen.blit(background, 0,0)
