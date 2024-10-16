@@ -50,6 +50,8 @@ while running:
         #game pauses at escape
         if game_state == game and event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             game_state = paused
+        if game_state == paused and event.type == pygame.KEYDOWN:
+            game_state = game
         
 
         #Game logic here
@@ -80,8 +82,11 @@ while running:
         if fireflies_caught == 0:
             jar.update()
         else: 
-            jar.update()
             glow.update()
+            jar.update()
+    
+    elif game_state == paused:
+        screen.blit(background, 0,0)
 
     elif game_state == end:
         continue
