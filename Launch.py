@@ -29,7 +29,6 @@ for _ in range(firefly_count):
     fireflies.add(new_firefly)
 
 jar = Jar(0, 0)
-glow = Glow(0,0)
 
 #Main loop
 game_state = start

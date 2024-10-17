@@ -54,6 +54,9 @@ class Firefly(pygame.sprite.Sprite):
         self.image = self.frames[self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        #animation speed
+        self.speed_x = random.uniform(-2, 2)  # Random speed in x direction
+        self.speed_y = random.uniform(-2, 2)  # Random speed in y direction
 
     def update(self):
         #firefly aniation
@@ -63,9 +66,23 @@ class Firefly(pygame.sprite.Sprite):
             self.frame_timer = 0
         self.image = self.frames[self.frame_index]
         self.rect = self.image.get_rect(topleft=self.rect.topleft)
-        #draw updated firefly
-        screen.blit(self.image, self.rect)
         #moving across the screen
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+
+        #if firefly goes off screen
+        if self.rect.right < 0:
+            self.rect.left = width
+        if self.rect.left > width:
+            self.rect.right = 0
+        if self.rect.bottom < 0:
+            self.rect.top = height
+        if self.rect.top > height:
+            self.rect.bottom = 0
+            
+        #draw the firefly
+        screen.blit(self.image, self.rect)
+
         
 
 class Jar(pygame.sprite.Sprite):
@@ -81,4 +98,3 @@ class Jar(pygame.sprite.Sprite):
         self.rect.topleft = (mouse_x, mouse_y)
         # Blit the jar image at the updated position
         screen.blit(self.image, self.rect)
-
