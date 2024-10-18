@@ -34,8 +34,6 @@ caption_text = smaller_pixel_font.render(f"Click on a firefly to catch it. Catch
 caption_rect = caption_text.get_rect(center=(width/2, (height/2)))
 #Game pause text
 restart_directions = pixel_font.render("Press any key to unpause.", None, white)
-#End game text
-end_title = pixel_font.render(f"Time is up! You caught {fireflies_caught} fireflies.", None, white)
 
 # initialize entities
 grass = ForegroundGrass()
@@ -133,7 +131,9 @@ while running:
         fireflies.draw(screen)
         screen.blit(counter, (50, 50))
         screen.blit(beginning_overlay, (0, 0))  # Transparent overlay
-        screen.blit(end_title, heading_rect)
+        #End game text
+        end_title = pixel_font.render(f"Time is up! You caught {fireflies_caught} fireflies.", None, white)
+        screen.blit(end_title, caption_rect)
 
     # Flip the display to show updates
     pygame.display.flip()
