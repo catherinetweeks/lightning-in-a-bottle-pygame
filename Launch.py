@@ -19,16 +19,18 @@ paused = "paused"
 
 #initialize game-specific counters
 fireflies_caught = 0
+game_start_time = 0
+time_limit = 45000
 
 #Screen text
 firefly_yellow = (255, 255, 0)
 white = (255, 255, 255)
 pixel_font = pygame.font.Font("fonts/PixelifySans.ttf", 32)
-smaller_pixel_font = pygame.font.Font("fonts/PixelifySans.ttf", 20)
+smaller_pixel_font = pygame.font.Font("fonts/PixelifySans.ttf", 24)
 #Beginning overlay text
 press_any_key = pixel_font.render(f"Press any key to start!", False, white)
 heading_rect = press_any_key.get_rect(center=(width/2, (height/2)-100))
-caption_text = smaller_pixel_font.render(f"Click on a firefly to catch it. When the sun rises, the game ends.", False, white)
+caption_text = smaller_pixel_font.render(f"Click on a firefly to catch it. Catch as many as you can.", False, white)
 caption_rect = caption_text.get_rect(center=(width/2, (height/2)))
 #Game pause text
 restart_directions = pixel_font.render(f"Press any key to unpause.", None, white)
@@ -86,6 +88,16 @@ while running:
             if event.type == pygame.KEYDOWN:
                 game_state = start
 
+       # Timer Logic
+    if game_state == game:
+        current_time = pygame.time.get_ticks()  # Get the current time
+        elapsed_time = current_time - game_start_time  # Calculate elapsed time
+
+        # Check if the time limit (60 seconds) has been reached
+        if elapsed_time >= time_limit:
+            game_state = end  # Switch to the "end" game state after 60 seconds
+   
+   
     # Screen Updates
     if game_state == start:
         screen.blit(background, (0, 0))
@@ -114,7 +126,11 @@ while running:
         screen.blit(restart_directions, heading_rect)
 
     elif game_state == end:
-        continue  # Implement end screen logic here if needed
+        screen.blit(background, (0, 0))  # Redraw the background when paused
+        screen.blit(grass_frames[0], (0, 0))
+        fireflies.draw(screen)
+        screen.blit(counter, (50, 50))
+        screen.blit(beginning_overlay, (0, 0))  # Transparent overlay
 
     # Flip the display to show updates
     pygame.display.flip()
