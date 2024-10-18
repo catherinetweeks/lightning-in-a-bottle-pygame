@@ -21,8 +21,7 @@ firefly_frames = [
     pygame.transform.scale(pygame.image.load("images/firefly loop/firefly1.png"), (24, 24)).convert_alpha(),
 ]
 
-empty_jar_image = pygame.transform.scale(pygame.image.load("images/empty_jar.png"), (80, 80)).convert_alpha()
-glow_overlay = pygame.transform.scale(pygame.image.load('images/glow_jar.png'), (80, 80)).convert_alpha()
+empty_jar_image = pygame.transform.scale(pygame.image.load("images/empty_jar.png"), (64, 64)).convert_alpha()
 
 
 #Waving grass for the foreground
@@ -44,33 +43,34 @@ class ForegroundGrass(pygame.sprite.Sprite):
 
 class Firefly(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        #super().__init__()
-        pygame.sprite.Sprite.__init__(self,)
+        pygame.sprite.Sprite.__init__(self)
         self.frame_index = random.randint(0, 4)
         self.animation_speed = random.randint(3, 10)
         self.frame_timer = 0
-        #using mid-size frame for the get rect function
+
+        # Using mid-size frame for the get rect function
         self.frames = firefly_frames
         self.image = self.frames[self.frame_index]
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect()  # Get rect once
         self.rect.topleft = (x, y)
-        #animation speed
+
+        # Random movement speeds
         self.speed_x = random.uniform(-2, 2)  # Random speed in x direction
         self.speed_y = random.uniform(-2, 2)  # Random speed in y direction
 
     def update(self):
-        #firefly aniation
+        # Firefly animation
         self.frame_timer += 1
         if self.frame_timer >= self.animation_speed:
             self.frame_index = (self.frame_index + 1) % len(firefly_frames)
             self.frame_timer = 0
         self.image = self.frames[self.frame_index]
-        self.rect = self.image.get_rect(topleft=self.rect.topleft)
-        #moving across the screen
+
+        # Moving across the screen
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
 
-        #if firefly goes off screen
+        # Boundary checks
         if self.rect.right < 0:
             self.rect.left = width
         if self.rect.left > width:
@@ -79,13 +79,13 @@ class Firefly(pygame.sprite.Sprite):
             self.rect.top = height
         if self.rect.top > height:
             self.rect.bottom = 0
-            
-        #draw the firefly
+
+        # Draw the firefly
         screen.blit(self.image, self.rect)
 
         
 
-class Jar(pygame.sprite.Sprite):
+class MouseJar(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()  # Initialize the parent class (Sprite)
         self.image = empty_jar_image  # Load or assign the jar image

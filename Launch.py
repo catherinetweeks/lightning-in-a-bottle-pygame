@@ -1,7 +1,7 @@
 import pygame
 import random
 from constants import FPS, screen, background, firefly_count, width, height
-from sprites import ForegroundGrass, Firefly, grass_frames, Jar
+from sprites import ForegroundGrass, Firefly, grass_frames, MouseJar
 
 # pygame setup
 pygame.init()
@@ -20,6 +20,11 @@ paused = "paused"
 #initialize game-specific counters
 fireflies_caught = 0
 
+#Screen text
+firefly_yellow = (255, 255, 0)
+pixel_font = pygame.font.Font("fonts/PixelifySans.ttf", 32)
+#counter = pixel_font.render(f"{fireflies_caught}", False, (255, 255, 0))
+
 # initialize entities
 grass = ForegroundGrass()
 
@@ -28,7 +33,7 @@ for _ in range(firefly_count):
     new_firefly = Firefly(random.randint(0, width), random.randint(0, height))
     fireflies.add(new_firefly)
 
-jar = Jar(0, 0)
+jar = MouseJar(0, 0)
 
 #Main loop
 game_state = start
@@ -51,18 +56,6 @@ while running:
             game_state = paused
         if game_state == paused and event.type == pygame.KEYDOWN:
             game_state = game
-        
-
-        #Game logic here
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # Left click
-            mouse_pos = pygame.mouse.get_pos()
-            # Check for collision with any firefly
-            for firefly in fireflies:
-                if firefly.rect.collidepoint(mouse_pos):
-                    fireflies.remove(firefly)  # Remove the firefly if clicked
-                    fireflies_caught += 1
-                    new_firefly = Firefly(random.randint(0, width), random.randint(0, height))
-                    fireflies.add(new_firefly)
 
 
     #Background
@@ -71,17 +64,35 @@ while running:
         screen.blit(grass_frames[0], (0,0))
         screen.blit(beginning_overlay, (0,0))
 
-
     elif game_state == game:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
+            mouse_pos = pygame.mouse.get_pos()
+            clicked_firefly = None
+            for firefly in fireflies:
+                if firefly.rect.collidepoint(mouse_pos):
+                    clicked_firefly = firefly
+                    break  # We only want to catch one firefly per click
+
+            if clicked_firefly:
+                fireflies.remove(clicked_firefly)  # Remove the clicked firefly
+                fireflies_caught += 1
+                # Optionally add a new firefly
+                new_firefly = Firefly(random.randint(0, width), random.randint(0, height))
+                fireflies.add(new_firefly)
+
+
         screen.blit(background, (0,0))
 
         #Update sprites
+        counter = pixel_font.render(f"{fireflies_caught}", False, (255, 255, 0))
         fireflies.update()
         grass.update()
         jar.update()
+        screen.blit(counter, (50, 50))
     
     elif game_state == paused:
         screen.blit(background, 0,0)
+        screen.blit(beginning_overlay, (0,0))
 
     elif game_state == end:
         continue
