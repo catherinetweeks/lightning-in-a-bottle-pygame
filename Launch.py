@@ -22,8 +22,14 @@ fireflies_caught = 0
 
 #Screen text
 firefly_yellow = (255, 255, 0)
+white = (255, 255, 255)
 pixel_font = pygame.font.Font("fonts/PixelifySans.ttf", 32)
-#counter = pixel_font.render(f"{fireflies_caught}", False, (255, 255, 0))
+smaller_pixel_font = pygame.font.Font("fonts/PixelifySans.ttf", 20)
+#Beginning overlay text
+press_any_key = pixel_font.render(f"Press any key to start!", False, white)
+heading_rect = press_any_key.get_rect(center=(width/2, (height/2)-100))
+caption_text = smaller_pixel_font.render(f"Click on a firefly to catch it. When the sun rises, the game ends.", False, white)
+caption_rect = caption_text.get_rect(center=(width/2, (height/2)))
 
 # initialize entities
 grass = ForegroundGrass()
@@ -63,6 +69,9 @@ while running:
         screen.blit(background, (0,0))
         screen.blit(grass_frames[0], (0,0))
         screen.blit(beginning_overlay, (0,0))
+        screen.blit(press_any_key, heading_rect)
+        screen.blit(caption_text, caption_rect)
+
 
     elif game_state == game:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
@@ -84,7 +93,7 @@ while running:
         screen.blit(background, (0,0))
 
         #Update sprites
-        counter = pixel_font.render(f"{fireflies_caught}", False, (255, 255, 0))
+        counter = pixel_font.render(f"{fireflies_caught}", False, firefly_yellow)
         fireflies.update()
         grass.update()
         jar.update()
