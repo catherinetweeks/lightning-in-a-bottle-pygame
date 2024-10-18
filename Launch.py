@@ -30,6 +30,8 @@ press_any_key = pixel_font.render(f"Press any key to start!", False, white)
 heading_rect = press_any_key.get_rect(center=(width/2, (height/2)-100))
 caption_text = smaller_pixel_font.render(f"Click on a firefly to catch it. When the sun rises, the game ends.", False, white)
 caption_rect = caption_text.get_rect(center=(width/2, (height/2)))
+#Game pause text
+restart_directions = pixel_font.render(f"Press any key to unpause.", None, white)
 
 # initialize entities
 grass = ForegroundGrass()
@@ -41,74 +43,82 @@ for _ in range(firefly_count):
 
 jar = MouseJar(0, 0)
 
-#Main loop
+# Main loop
 game_state = start
 while running:
-    # poll for events
+    # Poll for events
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: #If user presses X button
+        if event.type == pygame.QUIT:
             running = False
 
-        #starting game
+        # Handle start screen events
         if game_state == start:
-            if event.type == pygame.KEYDOWN: #press any key to start
+            if event.type == pygame.KEYDOWN:
                 game_state = game
-        elif game_state == end: 
-            if event.type == pygame.KEYDOWN: # and event.key == pygame.K_RETURN: #enter to restart
+
+        # Handle game events
+        elif game_state == game:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                game_state = paused
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
+                mouse_pos = pygame.mouse.get_pos()
+                clicked_firefly = None
+                for firefly in fireflies:
+                    if firefly.rect.collidepoint(mouse_pos):
+                        clicked_firefly = firefly
+                        break  # We only want to catch one firefly per click
+
+                if clicked_firefly:
+                    fireflies.remove(clicked_firefly)
+                    fireflies_caught += 1
+                    # Optionally add a new firefly
+                    new_firefly = Firefly(random.randint(0, width), random.randint(0, height))
+                    fireflies.add(new_firefly)
+
+        # Handle paused events
+        elif game_state == paused:
+            if event.type == pygame.KEYDOWN:  # Any key unpauses
+                game_state = game
+
+        # Handle end screen events
+        elif game_state == end:
+            if event.type == pygame.KEYDOWN:
                 game_state = start
 
-        #game pauses at escape
-        if game_state == game and event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            game_state = paused
-        if game_state == paused and event.type == pygame.KEYDOWN:
-            game_state = game
-
-
-    #Background
+    # Screen Updates
     if game_state == start:
-        screen.blit(background, (0,0))
-        screen.blit(grass_frames[0], (0,0))
-        screen.blit(beginning_overlay, (0,0))
+        screen.blit(background, (0, 0))
+        screen.blit(grass_frames[0], (0, 0))
+        screen.blit(beginning_overlay, (0, 0))
         screen.blit(press_any_key, heading_rect)
         screen.blit(caption_text, caption_rect)
 
-
     elif game_state == game:
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
-            mouse_pos = pygame.mouse.get_pos()
-            clicked_firefly = None
-            for firefly in fireflies:
-                if firefly.rect.collidepoint(mouse_pos):
-                    clicked_firefly = firefly
-                    break  # We only want to catch one firefly per click
+        screen.blit(background, (0, 0))
 
-            if clicked_firefly:
-                fireflies.remove(clicked_firefly)  # Remove the clicked firefly
-                fireflies_caught += 1
-                # Optionally add a new firefly
-                new_firefly = Firefly(random.randint(0, width), random.randint(0, height))
-                fireflies.add(new_firefly)
-
-
-        screen.blit(background, (0,0))
-
-        #Update sprites
+        # Update sprites
         counter = pixel_font.render(f"{fireflies_caught}", False, firefly_yellow)
         fireflies.update()
         grass.update()
         jar.update()
         screen.blit(counter, (50, 50))
-    
+
     elif game_state == paused:
-        screen.blit(background, 0,0)
-        screen.blit(beginning_overlay, (0,0))
+        # Make sure the background is drawn before the overlay
+        screen.blit(background, (0, 0))  # Redraw the background when paused
+        screen.blit(grass_frames[0], (0, 0))
+        fireflies.draw(screen)
+        screen.blit(counter, (50, 50))
+        screen.blit(beginning_overlay, (0, 0))  # Transparent overlay
+        screen.blit(restart_directions, heading_rect)
 
     elif game_state == end:
-        continue
+        continue  # Implement end screen logic here if needed
 
-    # flip() the display to put your work on screen
+    # Flip the display to show updates
     pygame.display.flip()
 
-    clock.tick(FPS)  # limits FPS to 60
+    clock.tick(FPS)  # Control frame rate
 
 pygame.quit()
