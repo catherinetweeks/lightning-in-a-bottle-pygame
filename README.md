@@ -19,7 +19,7 @@ The game starts with fireflies randomly appearing on the screen. They flicker an
 
 ## Installation
 
-To run Firefly Catcher, make sure you have Python and Pygame installed. You can install Pygame by running:
+To run this game, make sure you have Python and Pygame installed. You can install Pygame by running:
 
 ```bash
 pip install pygame
