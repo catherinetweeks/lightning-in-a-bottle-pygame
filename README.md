@@ -1,6 +1,6 @@
-# Firefly Catcher
+# Lightning in a Bottle
 
-**Firefly Catcher** is a fun and simple game where your goal is to catch as many fireflies as possible by clicking on them before the time runs out! This project was created with Python's Pygame library, featuring original pixel art.
+This is a fun and simple game where your goal is to catch as many fireflies as possible by clicking on them before the time runs out! This project was created with Python's Pygame library, featuring original pixel art.
 
 ## Gameplay
 
